@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Danh Sách Sản Phẩm</title>
+</head>
+
+<body>
+
+    <h1>Danh Sách Sản Phẩm Chợ Tết</h1>
+
+    <!-- Bài 5: Tìm kiếm -->
+    <input type="text" id="search">
+
+    <!-- Bài 6: Sắp xếp -->
+    <button id="asc">Tăng</button>
+    <button id="desc">Giảm</button>
+
+    <!-- Bài 1: Hiển thị danh sách -->
+    <ul id="list"></ul>
+
+    <!-- Bài 2: Thêm sản phẩm -->
+    <form id="form">
+        <input type="text" id="name">
+        <input type="number" id="price">
+        <button type="submit">Thêm</button>
+    </form>
+
+    <script>
+
+        var products = [
+            { id: 1, name: "Bánh Chưng", price: 150000 },
+            { id: 2, name: "Giò Lụa", price: 180000 },
+            { id: 3, name: "Cành Đào", price: 500000 }
+        ];
+
+        var list = document.getElementById("list");
+        var form = document.getElementById("form");
+        var search = document.getElementById("search");
+
+        //  Bài 1: Hiển thị sản phẩm 
+        function render(arr) {
+
+            list.innerHTML = "";
+
+            for (var i = 0; i < arr.length; i++) {
+
+                var li = document.createElement("li");
+
+                li.innerHTML =
+                    arr[i].name + " - " +
+                    Number(arr[i].price).toFixed(3) +
+                    ' <button class="edit">Sửa</button>' +     // Bài 4
+                    ' <button class="delete">Xóa</button>';    // Bài 3
+
+                (function(index) {
+
+                    var editBtn = li.querySelector(".edit");
+                    var deleteBtn = li.querySelector(".delete");
+
+                    //  Bài 4: Cập nhật giá 
+                    editBtn.addEventListener("click", function () {
+
+                        var newPrice = prompt("Nhập giá mới:");
+
+                        if (newPrice !== null && newPrice !== "") {
+                            products[index].price = Number(newPrice);
+                            render(products);
+                        }
+
+                    });
+
+                    //  Bài 3: Xóa sản phẩm 
+                    deleteBtn.addEventListener("click", function () {
+
+                        var check = confirm("Xóa sản phẩm?");
+
+                        if (check) {
+                            products.splice(index, 1);
+                            render(products);
+                        }
+
+                    });
+
+                })(i);
+
+                list.appendChild(li);
+            }
+        }
+
+        render(products);
+
+        //  Bài 2: Thêm sản phẩm 
+        form.addEventListener("submit", function(e) {
+
+            e.preventDefault();
+
+            var name = document.getElementById("name").value;
+            var price = document.getElementById("price").value;
+
+            var newItem = {
+                id: products.length + 1,
+                name: name,
+                price: Number(price)
+            };
+
+            products.push(newItem);
+
+            render(products);
+
+            form.reset();
+        });
+
+        // Bài 5: Tìm kiếm
+        search.addEventListener("input", function() {
+
+            var key = search.value.toLowerCase();
+            var result = [];
+
+            for (var i = 0; i < products.length; i++) {
+
+                if (products[i].name.toLowerCase().indexOf(key) !== -1) {
+                    result.push(products[i]);
+                }
+
+            }
+
+            render(result);
+
+        });
+
+        // Bài 6: Sắp xếp tăng
+        document.getElementById("asc").addEventListener("click", function() {
+
+            products.sort(function(a, b) {
+                return a.price - b.price;
+            });
+
+            render(products);
+
+        });
+
+        // Sắp xếp giảm
+        document.getElementById("desc").addEventListener("click", function() {
+
+            products.sort(function(a, b) {
+                return b.price - a.price;
+            });
+
+            render(products);
+
+        });
+
+    </script>
+
+</body>
+</html>
